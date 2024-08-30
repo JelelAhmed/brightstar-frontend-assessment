@@ -1,0 +1,25 @@
+@import './styles/variables';
+@import './styles/mixins';
+
+.filters {
+  width: 20%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+.product-list {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+}
