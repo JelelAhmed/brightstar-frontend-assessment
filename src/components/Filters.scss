@@ -1,3 +1,6 @@
+@import '../styles/variables';
+
+
 .filters-container {
   padding: 1rem;
   background-color: #f9f9f9;
@@ -7,22 +10,99 @@
   h3 {
     margin-bottom: 1rem;
     color: #333;
+    font-size: 1.2rem;
+    text-align: center; // Center title for better readability on mobile
   }
 
   .filter-group {
     margin-bottom: 1rem;
 
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: #555;
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      background-color: #ddd;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      cursor: default;
+      
+      svg {
+        font-size: 1rem; // Adjust icon size
+      }
     }
 
-    select {
+    select,
+    input[type="range"],
+    input[type="text"] {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.6rem;
       border-radius: 4px;
       border: 1px solid #ddd;
+      font-size: 1rem; // Ensures text is legible on small screens
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none; /* Override default styling */
+      appearance: none;
+      height: 8px; /* Adjust the height of the range slider */
+      background: #ddd; /* Color of the slider track */
+      outline: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: $primary-color; /* Thumb color */
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: $primary-color;
+      cursor: pointer;
+    }
+  }
+
+  .toggle-button {
+    display: none; // Hidden by default
+    padding: 0.5rem;
+    border: none;
+    background-color: $primary-color;
+    color: white;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: center;
+
+    svg {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    .filters-container {
+      padding: 0.5rem;
+      border-radius: 6px;
+
+      .toggle-button {
+        display: block; // Show the button on mobile
+      }
+      
+      .filter-group {
+        display: none; // Hide filters by default on mobile
+      }
     }
   }
 }
