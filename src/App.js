@@ -17,7 +17,10 @@ import {
 import './App.scss';
 
 const App = () => {
-  const { products, loading, error } = useFetchProducts();
+  const [page, setPage] = useState(1);
+  const [limit] = useState(30); // Number of products per page
+  const skip = (page - 1) * limit;
+  const { products, loading, error, total } = useFetchProducts(skip, limit);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
@@ -60,16 +63,34 @@ const App = () => {
     setFilteredProducts(sorted);
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <Layout>
       <div className="filters">
-				<Filters onFilterChange={handleFilterChange} onSortChange={handleSortChange} />
+        <Filters onFilterChange={handleFilterChange} onSortChange={handleSortChange} />
       </div>
       <div className="product-list">
         {loading && <p>Loading products...</p>}
-        {error && <p>Error fetching products</p>}
+        {error && <p>Error fetching products: {error}</p>}
         <ProductList products={filteredProducts} />
+        <div className="pagination">
+          <button
+            disabled={page === 1}
+            onClick={() => handlePageChange(page - 1)}
+          >
+            Previous
+          </button>
+          <span>Page {page}</span>
+          <button
+            disabled={skip + limit >= total}
+            onClick={() => handlePageChange(page + 1)}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </Layout>
   );
