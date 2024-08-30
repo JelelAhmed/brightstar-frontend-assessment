@@ -18,7 +18,7 @@ import './App.scss';
 
 const App = () => {
   const [page, setPage] = useState(1);
-  const [limit] = useState(30); // Number of products per page
+  const [limit] = useState(30);
   const skip = (page - 1) * limit;
   const { products, loading, error, total } = useFetchProducts(skip, limit);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -27,26 +27,53 @@ const App = () => {
     setFilteredProducts(products);
   }, [products]);
 
-  const handleFilterChange = (filterType, value) => {
-    let filtered = products;
+  const uniqueCategories = [...new Set(products.map(product => product.category))];
+  const uniqueBrands = [...new Set(products.map(product => product.brand))];
 
-    if (filterType === 'category') {
-      filtered = filterByCategory(filtered, value);
-    } else if (filterType === 'price') {
-      const [minPrice, maxPrice] = value.split(',').map(Number);
-      filtered = filterByPriceRange(filtered, minPrice, maxPrice);
-    } else if (filterType === 'rating') {
-      filtered = filterByRating(filtered, Number(value));
-    } else if (filterType === 'stock') {
-      filtered = filterByStockStatus(filtered, value);
-    } else if (filterType === 'tags') {
-      filtered = filterByTags(filtered, value);
-    } else if (filterType === 'brand') {
-      filtered = filterByBrand(filtered, value);
-    }
+	
+	const handleFilterChange = (filterType, value) => {
+		let filtered = products;
+	
+		if (filterType === 'category') {
+			filtered = filterByCategory(filtered, value);
+		} else if (filterType === 'price') {
+      const { min, max } = value;
+      filtered = filterByPriceRange(filtered, min, max);
+		} else if (filterType === 'rating') {
+			filtered = filterByRating(filtered, Number(value));
+		} else if (filterType === 'stock') {
+			filtered = filterByStockStatus(filtered, value);
+		} else if (filterType === 'tags') {
+			filtered = filterByTags(filtered, value);
+		} else if (filterType === 'brand') {
+			filtered = filterByBrand(filtered, value);
+		}
+	
+		setFilteredProducts(filtered);
+	};
+	
 
-    setFilteredProducts(filtered);
-  };
+  // const handleFilterChange = (filterType, value) => {
+  //   let filtered = products;
+
+  //   if (filterType === 'category') {
+  //     filtered = filterByCategory(filtered, value);
+  //   } else if (filterType === 'price') {
+  //     const [minPrice, maxPrice] = value.split(',').map(Number);
+  //     filtered = filterByPriceRange(filtered, minPrice, maxPrice);
+  //   } else if (filterType === 'rating') {
+  //     filtered = filterByRating(filtered, Number(value));
+  //   } else if (filterType === 'stock') {
+  //     filtered = filterByStockStatus(filtered, value);
+  //   } else if (filterType === 'tags') {
+	// 		const tagsArray = value.map(tag => tag.trim().toLowerCase());
+	// 		filtered = filterByTags(filtered, tagsArray);
+	// 	} else if (filterType === 'brand') {
+  //     filtered = filterByBrand(filtered, value);
+  //   }
+
+  //   setFilteredProducts(filtered);
+  // };
 
   const handleSortChange = (e) => {
     const sortType = e.target.value;
@@ -70,7 +97,13 @@ const App = () => {
   return (
     <Layout>
       <div className="filters">
-        <Filters onFilterChange={handleFilterChange} onSortChange={handleSortChange} />
+        <Filters 
+					products={products} 
+					categories={uniqueCategories} 
+					brands={uniqueBrands} 
+					onFilterChange={handleFilterChange} 
+					onSortChange={handleSortChange} 
+				/>
       </div>
       <div className="product-list">
         {loading && <p>Loading products...</p>}

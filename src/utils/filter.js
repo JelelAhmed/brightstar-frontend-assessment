@@ -20,7 +20,14 @@ export const filterByStockStatus = (products, status) => {
 
 export const filterByTags = (products, tags) => {
   if (tags.length === 0) return products;
-  return products.filter(product => tags.every(tag => product.tags.includes(tag)));
+	
+  const lowerCaseTags = tags.map(tag => tag.trim().toLowerCase());
+
+  return products.filter(product =>
+    lowerCaseTags.every(tag =>
+      product.tags.some(productTag => productTag.toLowerCase() === tag)
+    )
+  );
 };
 
 export const filterByBrand = (products, brand) => {

@@ -1,14 +1,13 @@
 import React from 'react';
 import './ProductCard.scss';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onBuy }) => {
   const {
     title,
     description,
     price,
     discountPercentage,
     rating,
-    stock,
     tags,
     images,
     availabilityStatus,
@@ -53,6 +52,9 @@ const ProductCard = ({ product }) => {
             <div>Shipping: {shippingInformation}</div>
             <div>Warranty: {warrantyInformation}</div>
           </div>
+          <button className="buy-button" onClick={() => onBuy(product)}>
+            Buy Now
+          </button>
         </div>
       </div>
     </div>

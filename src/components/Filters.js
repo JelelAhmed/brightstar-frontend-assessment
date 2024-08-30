@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
+import { capitalizeFirstLetter } from '../utils/formatText';
 import './Filters.scss';
 
-const Filters = ({ onFilterChange, onSortChange }) => {
+const Filters = ({ onFilterChange, onSortChange, brands, categories }) => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const [isPriceRangeOpen, setIsPriceRangeOpen] = useState(true);
   const [isRatingOpen, setIsRatingOpen] = useState(true);
   const [isStockStatusOpen, setIsStockStatusOpen] = useState(true);
   const [isTagsOpen, setIsTagsOpen] = useState(true);
   const [isBrandOpen, setIsBrandOpen] = useState(true);
+
+	const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000);
+
+	const handlePriceRangeChange = () => {
+    onFilterChange('price', { min: minPrice, max: maxPrice });
+  };
+
+	const handleTagFilterChange = (value) => {
+    const tags = value.split(',').map(tag => tag.trim());
+    onFilterChange('tags', tags);
+  };
 
   return (
     <div className="filters-container">
@@ -21,9 +34,9 @@ const Filters = ({ onFilterChange, onSortChange }) => {
         {isCategoryOpen && (
           <select id="category" onChange={e => onFilterChange('category', e.target.value)}>
             <option value="all">All</option>
-            <option value="electronics">Electronics</option>
-            <option value="fashion">Fashion</option>
-            <option value="beauty">Beauty</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>{capitalizeFirstLetter(category)}</option>
+            ))}
           </select>
         )}
       </div>
@@ -34,14 +47,35 @@ const Filters = ({ onFilterChange, onSortChange }) => {
           Price Range:
         </label>
         {isPriceRangeOpen && (
-          <input
-            type="range"
-            id="price-range"
-            min="0"
-            max="1000"
-            step="10"
-            onChange={e => onFilterChange('price', e.target.value)}
-          />
+          <div>
+            <input
+              type="range"
+              id="min-price"
+              min="0"
+              max="1000"
+              step="10"
+              value={minPrice}
+              onChange={e => {
+                setMinPrice(e.target.value);
+                handlePriceRangeChange();
+              }}
+            />
+            <input
+              type="range"
+              id="max-price"
+              min="0"
+              max="1000"
+              step="10"
+              value={maxPrice}
+              onChange={e => {
+                setMaxPrice(e.target.value);
+                handlePriceRangeChange();
+              }}
+            />
+            <div>
+              <span>Min: ${minPrice}</span> - <span>Max: ${maxPrice}</span>
+            </div>
+          </div>
         )}
       </div>
 
@@ -52,9 +86,12 @@ const Filters = ({ onFilterChange, onSortChange }) => {
         </label>
         {isRatingOpen && (
           <select id="rating" onChange={e => onFilterChange('rating', e.target.value)}>
-            <option value="0">All</option>
-            <option value="4">4 Stars & Up</option>
+						<option value="0">All</option>
+            <option value="1">1 Star & Up</option>
+            <option value="2">2 Stars & Up</option>
             <option value="3">3 Stars & Up</option>
+            <option value="4">4 Stars & Up</option>
+            <option value="5">5 Stars</option>
           </select>
         )}
       </div>
@@ -76,18 +113,18 @@ const Filters = ({ onFilterChange, onSortChange }) => {
 
       {/* Tag Filter */}
       <div className="filter-group">
-        <label htmlFor="tags" onClick={() => setIsTagsOpen(!isTagsOpen)}>
-          Tags:
-        </label>
-        {isTagsOpen && (
-          <input
-            type="text"
-            id="tags"
-            placeholder="Enter tags"
-            onBlur={e => onFilterChange('tags', e.target.value.split(','))}
-          />
-        )}
-      </div>
+				<label htmlFor="tags" onClick={() => setIsTagsOpen(!isTagsOpen)}>
+					Tags:
+				</label>
+				{isTagsOpen && (
+					<input
+						type="text"
+						id="tags"
+						placeholder="Enter tags separated by commas"
+						onChange={e => handleTagFilterChange(e.target.value)}
+					/>
+				)}
+			</div>
 
       {/* Brand Filter */}
       <div className="filter-group">
@@ -97,8 +134,9 @@ const Filters = ({ onFilterChange, onSortChange }) => {
         {isBrandOpen && (
           <select id="brand" onChange={e => onFilterChange('brand', e.target.value)}>
             <option value="all">All</option>
-            <option value="essence">Essence</option>
-            <option value="apple">Apple</option>
+            {brands.map((brand, index) => (
+              <option key={index} value={brand}>{brand}</option>
+            ))}
           </select>
         )}
       </div>
